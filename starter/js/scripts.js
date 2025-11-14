@@ -218,6 +218,68 @@ async function populateProjects() {
 }
 
 /**
+ * @description Add counter event listener to contact message in the form section
+ */
+function addMessageCounter() {
+    const messageElement = document.querySelector('#contactMessage');
+    messageElement.addEventListener('input', handleMessageCounter);
+}
+
+/**
+ * @description Update message counter section based on user input
+ * @param event
+ */
+function handleMessageCounter(event) {
+    const message = event.target.value;
+    const messageLength = message.length;
+    const charactersCounter = document.querySelector('#charactersLeft');
+    charactersCounter.textContent = `Characters: ${messageLength}/300`;
+    if (messageLength > 300) {
+        charactersCounter.style.color = 'darkred';
+    } else {
+        charactersCounter.style.color = '';
+    }
+}
+
+
+/**
+ * @description Adds form validation event listener
+ */
+function addFormValidation() {
+    const form = document.querySelector('#formSection');
+    form.addEventListener('submit', handleFormValidation);
+}
+
+function handleFormValidation(event) {
+    event.preventDefault();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const illegalCharacters = /[^a-zA-Z0-9@._-]/;
+
+    // Email validation
+    const email = document.querySelector('#contactEmail').value;
+    const emailError = document.querySelector('#emailError');
+    if (email.length === 0 || !emailRegex.test(email) || illegalCharacters.test(email)) {
+        emailError.textContent = 'Invalid email address';
+    } else {
+        emailError.textContent = '';
+    }
+
+    // Message validation
+    const message = document.querySelector('#contactMessage').value;
+    const messageError = document.querySelector('#messageError');
+    if (message.length === 0) {
+        messageError.textContent = 'Please enter the message you wish to submit';
+    } else if (message.length > 300) {
+        messageError.textContent = 'Message too long';
+    } else if (illegalCharacters.test(message)) {
+        messageError.textContent = 'Your message contains illegal characters';
+    } else {
+        messageError.textContent = '';
+    }
+}
+
+/**
  * @description Main function that build the application
  * @returns {Promise<void>}
  */
@@ -227,6 +289,8 @@ async function build() {
         projectsData = await readData('./data/projectsData.json');
         populateAboutMe();
         populateProjects();
+        addMessageCounter();
+        addFormValidation();
     } catch (error) {
         console.error(`Error loading application: ${error}`);
     }
