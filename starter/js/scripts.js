@@ -254,7 +254,7 @@ function handleFormValidation(event) {
     event.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const illegalCharacters = /[^a-zA-Z0-9@._-]/;
+    const illegalCharacters = /[^\sa-zA-Z0-9@._-]/;
 
     // Email validation
     const email = document.querySelector('#contactEmail').value;
@@ -276,6 +276,12 @@ function handleFormValidation(event) {
         messageError.textContent = 'Your message contains illegal characters';
     } else {
         messageError.textContent = '';
+    }
+
+    if (emailError.textContent.length === 0 && messageError.textContent.length === 0) {
+        // Reset form on successful submission
+        alert('Your message has been successfully submitted.');
+        event.target.reset();
     }
 }
 
